@@ -13,9 +13,9 @@ import {
   Bold, Italic, Strikethrough, List, ListOrdered,
   CheckSquare, Quote, Undo, Redo, Code
 } from 'lucide-react'
+import { Heading1, Heading2, Heading3, Heading4 } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Toggle } from '~/components/ui/toggle'
 
 export default function Editor() {
@@ -98,12 +98,20 @@ export default function Editor() {
       <div className="px-6 py-6">
         <div className="flex justify-between">
           <h2 className="text-2xl font-semibold leading-none tracking-tight">Editor</h2>
-          <div>
+          <div className="flex gap-2">
             <Button
               variant="outline"
-              onClick={() => setShowHtml(!showHtml)}
+              onClick={() => setShowHtml(false)}
+              className={!showHtml ? 'bg-secondary' : ''}
             >
-              {showHtml ? 'Show Editor' : 'Show HTML'}
+              Visual
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowHtml(true)}
+              className={showHtml ? 'bg-secondary' : ''}
+            >
+              Code
             </Button>
           </div>
         </div>
@@ -112,6 +120,34 @@ export default function Editor() {
         {!showHtml ? (
           <>
             <div className="mb-4 flex flex-wrap gap-2">
+              <Toggle
+                pressed={editor.isActive('heading', { level: 1 })}
+                onPressedChange={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                aria-label="Toggle H1"
+              >
+                <Heading1 className="h-4 w-4" />
+              </Toggle>
+              <Toggle
+                pressed={editor.isActive('heading', { level: 2 })}
+                onPressedChange={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                aria-label="Toggle H2"
+              >
+                <Heading2 className="h-4 w-4" />
+              </Toggle>
+              <Toggle
+                pressed={editor.isActive('heading', { level: 3 })}
+                onPressedChange={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                aria-label="Toggle H3"
+              >
+                <Heading3 className="h-4 w-4" />
+              </Toggle>
+              <Toggle
+                pressed={editor.isActive('heading', { level: 4 })}
+                onPressedChange={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
+                aria-label="Toggle H4"
+              >
+                <Heading4 className="h-4 w-4" />
+              </Toggle>
               <Toggle
                 pressed={editor.isActive('bold')}
                 onPressedChange={() => editor.chain().focus().toggleBold().run()}
