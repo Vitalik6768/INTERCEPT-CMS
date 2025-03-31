@@ -30,7 +30,9 @@ const initialContent = `
 
 export function Editor() {
   const [content, setContent] = useState(initialContent)
-//   const { toast } = useToast()
+  const [showHtml, setShowHtml] = useState(false)
+
+  //   const { toast } = useToast()
 
   const editor = useEditor({
     extensions: [
@@ -71,11 +73,39 @@ export function Editor() {
   return (
     <div className="space-y-4">
       <Card className="p-4 border rounded-lg shadow-sm">
+        <div className="px-2 py-2">
+          <div className="flex justify-between">
+            <h2 className="text-2xl font-semibold leading-none tracking-tight">Editor</h2>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowHtml(false)}
+                className={!showHtml ? 'bg-secondary' : ''}
+              >
+                Visual
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowHtml(true)}
+                className={showHtml ? 'bg-secondary' : ''}
+              >
+                Code
+              </Button>
+            </div>
+          </div>
+        </div>
+
         {editor && <Toolbar editor={editor} />}
-        <EditorContent
-          editor={editor}
-          className="prose prose-sm sm:prose-base lg:prose-lg max-w-none mt-4 focus:outline-none min-h-[300px] px-4"
-        />
+        {showHtml ? (
+          <pre className="whitespace-pre-wrap text-sm prose prose-sm sm:prose-base lg:prose-lg  mt-4 focus:outline-none min-h-[300px] max-w-[690px] px-4">
+            {editor?.getHTML()}
+          </pre>
+        ) : (
+          <EditorContent
+            editor={editor}
+            className="prose prose-sm sm:prose-base lg:prose-lg max-w-[700px] mt-4 focus:outline-none min-h-[300px] px-4"
+          />
+        )}
       </Card>
 
       <div className="flex justify-between">
@@ -89,15 +119,7 @@ export function Editor() {
         </Button>
       </div>
 
-      {/* <div className="mt-8">
-        <h3 className="mb-2 text-lg font-medium">Content Preview:</h3>
-        <Card className="p-6 border rounded-lg">
-          <div
-            className="prose prose-sm sm:prose-base lg:prose-lg max-w-none"
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
-        </Card>
-      </div> */}
+
     </div>
   )
 }
