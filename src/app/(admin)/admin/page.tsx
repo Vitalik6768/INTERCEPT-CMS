@@ -1,6 +1,6 @@
 // import { Editor } from '@tiptap/react'
 import React from 'react'
-import Editor from '../_components/Editor'
+import { Editor } from '../_components/Editor'
 
 function page() {
   return (

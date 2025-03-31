@@ -1,272 +1,103 @@
 "use client"
 
-import { useEffect, useState } from 'react'
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import Text from '@tiptap/extension-text'
-import Paragraph from '@tiptap/extension-paragraph'
-import Highlight from '@tiptap/extension-highlight'
-import TextStyle from "@tiptap/extension-text-style";
-import TaskList from '@tiptap/extension-task-list'
-import TaskItem from '@tiptap/extension-task-item'
-import Heading from '@tiptap/extension-heading'
+import { useState } from "react"
+import { useEditor, EditorContent } from "@tiptap/react"
+import StarterKit from "@tiptap/starter-kit"
+import Placeholder from "@tiptap/extension-placeholder"
+import Link from "@tiptap/extension-link"
+import Image from "@tiptap/extension-image"
+import TextAlign from "@tiptap/extension-text-align"
+import Underline from "@tiptap/extension-underline"
+// import { Toolbar } from "./toolbar"
+import { Save } from "lucide-react"
+// import { useToast } from "@/hooks/use-toast"
+import { Button } from "~/components/ui/button"
+import { Card } from "~/components/ui/card"
+import { Toolbar } from "./Toolbar"
 
-import { Color } from '@tiptap/extension-color'
+const initialContent = `
+<h2>Welcome to your Tiptap Editor</h2>
+<p>This is a full-featured content editor built with Tiptap and Next.js.</p>
+<p>Some example formatting:</p>
+<ul>
+  <li>This is a bullet list</li>
+  <li>With multiple items</li>
+</ul>
+<p>You can also use <strong>bold</strong>, <em>italic</em>, and <u>underlined</u> text.</p>
+<blockquote>This is a blockquote that you can use for important information.</blockquote>
+<p>Try out all the formatting options in the toolbar above!</p>
+`
 
+export function Editor() {
+  const [content, setContent] = useState(initialContent)
+//   const { toast } = useToast()
 
-import CharacterCount from '@tiptap/extension-character-count' // Import CharacterCount
-import {
-    Bold, Italic, Strikethrough, List, ListOrdered,
-    CheckSquare, Quote, Undo, Redo, Code
-} from 'lucide-react'
-import { Heading1, Heading2, Heading3, Heading4 } from 'lucide-react'
-
-import { Button } from '~/components/ui/button'
-import { Toggle } from '~/components/ui/toggle'
-
-export default function Editor() {
-    const [wordCount, setWordCount] = useState(0)
-    const [content, setContent] = useState<string>('<h3>hello</h3>')
-    const [showHtml, setShowHtml] = useState(false)
-
-    const recivedData = (data: string) => {
-        setContent(data)
-    }
-
-    const editor = useEditor({
-        extensions: [
-            StarterKit,
-            Highlight,
-            TaskList,
-            TaskItem,
-            Color,
-            TextStyle,
-            Heading.configure({
-                levels: [1, 2, 3, 4],
-                HTMLAttributes: {
-                    class: "font-bold text-gray-900 dark:text-gray-100",
-                },
-              }),
-
-            CharacterCount,
-            TaskList.configure({
-                HTMLAttributes: {
-                    class: "not-prose pl-2",
-                },
-            }),
-            TaskItem.configure({
-                HTMLAttributes: {
-                    class: "flex items-start my-4",
-                },
-                nested: true,
-            }),
-        ],
-        // Add CharacterCount here
-
-        content: `<table border="1">
-  <tbody><tr>
-    <th>Header 1</th>
-    <th>Header 2</th>
-    <th>Header 3</th>
-  </tr>
-  <tr>
-    <td>Row 1, Col 1</td>
-    <td>Row 1, Col 2</td>
-    <td>Row 1, Col 3</td>
-  </tr>
-  <tr>
-    <td>Row 2, Col 1</td>
-    <td>Row 2, Col 2</td>
-    <td>Row 2, Col 3</td>
-  </tr>
-</tbody></table>`,
-
-
-        // content,    
-
-        onUpdate: ({ editor }) => {
-            setWordCount(editor.storage.characterCount.words)
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Placeholder.configure({
+        placeholder: "Start writing your content...",
+      }),
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          class: "text-primary underline",
         },
-        editorProps: {
-            attributes: {
-                class: 'prose max-w-none',
-            },
+      }),
+      Image.configure({
+        HTMLAttributes: {
+          class: "rounded-md max-w-full",
         },
-    })
+      }),
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+    ],
+    content: content,
+    onUpdate: ({ editor }) => {
+      setContent(editor.getHTML())
+    },
+  })
 
+  const saveContent = () => {
+    // In a real app, you would save to a database or API
+    console.log("Saving content:", content)
+    // toast({
+    //   title: "Content saved",
+    //   description: "Your content has been saved successfully.",
+    // })
+  }
 
-    useEffect(() => {
-        if (editor && content) {
-            // const cleanedContent = input.replace(/^```html\s*|```$/g, "");
-            editor.commands.setContent(content)
-        }
-    }, [content])
+  return (
+    <div className="space-y-4">
+      <Card className="p-4 border rounded-lg shadow-sm">
+        {editor && <Toolbar editor={editor} />}
+        <EditorContent
+          editor={editor}
+          className="prose prose-sm sm:prose-base lg:prose-lg max-w-none mt-4 focus:outline-none min-h-[300px] px-4"
+        />
+      </Card>
 
+      <div className="flex justify-between">
+        <Button onClick={saveContent} className="flex items-center gap-2">
+          <Save className="w-4 h-4" />
+          Save Content
+        </Button>
 
-    if (!editor) {
-        return null
-    }
+        <Button variant="outline" onClick={() => editor?.commands.clearContent(true)}>
+          Clear
+        </Button>
+      </div>
 
-    return (
-        <div className="w-full max-w-4xl mx-auto h-full">
-            <div className="px-6 py-6">
-                <div className="flex justify-between">
-                    <h2 className="text-2xl font-semibold leading-none tracking-tight">Editor</h2>
-                    <div className="flex gap-2">
-                        <Button
-                            variant="outline"
-                            onClick={() => setShowHtml(false)}
-                            className={!showHtml ? 'bg-secondary' : ''}
-                        >
-                            Visual
-                        </Button>
-                        <Button
-                            variant="outline"
-                            onClick={() => setShowHtml(true)}
-                            className={showHtml ? 'bg-secondary' : ''}
-                        >
-                            Code
-                        </Button>
-                    </div>
-                </div>
-            </div>
-            <div className="px-6">
-                {!showHtml ? (
-                    <>
-                        <div className="mb-4 flex flex-wrap gap-2">
-                            <Toggle
-                                pressed={editor.isActive('heading', { level: 1 })}
-                                onPressedChange={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                                aria-label="Toggle H1"
-                            >
-                                <Heading1 className="h-4 w-4" />
-                            </Toggle>
-                            <Toggle
-                                pressed={editor.isActive('heading', { level: 2 })}
-                                onPressedChange={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                                aria-label="Toggle H2"
-                            >
-                                <Heading2 className="h-4 w-4" />
-                            </Toggle>
-                            <Toggle
-                                pressed={editor.isActive('heading', { level: 3 })}
-                                onPressedChange={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                                aria-label="Toggle H3"
-                            >
-                                <Heading3 className="h-4 w-4" />
-                            </Toggle>
-                            <Toggle
-                                pressed={editor.isActive('heading', { level: 4 })}
-                                onPressedChange={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
-                                aria-label="Toggle H4"
-                            >
-                                <Heading4 className="h-4 w-4" />
-                            </Toggle>
-                            <Toggle
-                                pressed={editor.isActive('bold')}
-                                onPressedChange={() => editor.chain().focus().toggleBold().run()}
-                                aria-label="Toggle bold"
-                            >
-                                <Bold className="h-4 w-4" />
-                            </Toggle>
-                            <Toggle
-                                pressed={editor.isActive('italic')}
-                                onPressedChange={() => editor.chain().focus().toggleItalic().run()}
-                                aria-label="Toggle italic"
-                            >
-                                <Italic className="h-4 w-4" />
-                            </Toggle>
-                            <Toggle
-                                pressed={editor.isActive('strike')}
-                                onPressedChange={() => editor.chain().focus().toggleStrike().run()}
-                                aria-label="Toggle strikethrough"
-                            >
-                                <Strikethrough className="h-4 w-4" />
-                            </Toggle>
-                            <Toggle
-                                pressed={editor.isActive('bulletList')}
-                                onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
-                                aria-label="Toggle bullet list"
-                            >
-                                <List className="h-4 w-4" />
-                            </Toggle>
-                            {/* <input
-                                type="color"
-                                onInput={event => editor.chain().focus().setColor(event.target.value).run()}
-                                value={editor.getAttributes('textStyle').color}
-                                data-testid="setColor"
-                            />
-                            <Button
-                                onClick={() => editor.chain().focus().setColor('#958DF1').run()}
-                                className={editor.isActive('textStyle', { color: '#958DF1' }) ? 'is-active' : ''}
-                                data-testid="setPurple"
-                            /> */}
-
-
-
-                            <Toggle
-                                pressed={editor.isActive('orderedList')}
-                                onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}
-                                aria-label="Toggle ordered list"
-                            >
-                                <ListOrdered className="h-4 w-4" />
-                            </Toggle>
-                            <Toggle
-                                pressed={editor.isActive('taskList')}
-                                onPressedChange={() => editor.chain().focus().toggleTaskList().run()}
-                                aria-label="Toggle task list"
-                            >
-                                <CheckSquare className="h-4 w-4" />
-                            </Toggle>
-                            <Toggle
-                                pressed={editor.isActive('blockquote')}
-                                onPressedChange={() => editor.chain().focus().toggleBlockquote().run()}
-                                aria-label="Toggle blockquote"
-                            >
-                                <Quote className="h-4 w-4" />
-                            </Toggle>
-                            <Toggle
-                                pressed={editor.isActive('code')}
-                                onPressedChange={() => editor.chain().focus().toggleCode().run()}
-                                aria-label="Toggle code"
-                            >
-                                <Code className="h-4 w-4" />
-                            </Toggle>
-
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                onClick={() => editor.chain().focus().undo().run()}
-                                disabled={!editor.can().undo()}
-                                aria-label="Undo"
-                            >
-                                <Undo className="h-4 w-4" />
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                onClick={() => editor.chain().focus().redo().run()}
-                                disabled={!editor.can().redo()}
-                                aria-label="Redo"
-                            >
-                                <Redo className="h-4 w-4" />
-                            </Button>
-                        </div>
-                        <div className="border rounded-md p-4 min-h-[250px]">
-                            <EditorContent editor={editor} />
-                        </div>
-                    </>
-                ) : (
-                    <div className="border rounded-md p-4 min-h-[250px]">
-                        <pre className="whitespace-pre-wrap">
-                            {editor?.getHTML()}
-                        </pre>
-                    </div>
-                )}
-                <div className="mt-4 text-sm text-gray-600">
-                    Word count: {wordCount}
-                </div>
-            </div>
-        </div>
-    )
+      {/* <div className="mt-8">
+        <h3 className="mb-2 text-lg font-medium">Content Preview:</h3>
+        <Card className="p-6 border rounded-lg">
+          <div
+            className="prose prose-sm sm:prose-base lg:prose-lg max-w-none"
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        </Card>
+      </div> */}
+    </div>
+  )
 }
