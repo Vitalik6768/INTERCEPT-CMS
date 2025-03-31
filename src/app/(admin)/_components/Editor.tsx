@@ -31,6 +31,7 @@ const initialContent = `
 export function Editor() {
   const [content, setContent] = useState(initialContent)
   const [showHtml, setShowHtml] = useState(false)
+  const [htmlContent, setHtmlContent] = useState(initialContent)
 
   //   const { toast } = useToast()
 
@@ -58,8 +59,16 @@ export function Editor() {
     content: content,
     onUpdate: ({ editor }) => {
       setContent(editor.getHTML())
+      setHtmlContent(editor.getHTML())
     },
   })
+
+  const handleHtmlChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setHtmlContent(e.target.value)
+    if (editor) {
+      editor.commands.setContent(e.target.value)
+    }
+  }
 
   const saveContent = () => {
     // In a real app, you would save to a database or API
@@ -77,49 +86,59 @@ export function Editor() {
           <div className="flex justify-between">
             <h2 className="text-2xl font-semibold leading-none tracking-tight">Editor</h2>
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setShowHtml(false)}
-                className={!showHtml ? 'bg-secondary' : ''}
-              >
-                Visual
+
+              <Button onClick={saveContent} className="flex items-center gap-2">
+                <Save className="w-4 h-4" />
+                Save ssds
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => setShowHtml(true)}
-                className={showHtml ? 'bg-secondary' : ''}
-              >
-                Code
+
+              <Button variant="outline" onClick={() => editor?.commands.clearContent(true)}>
+                Clear
               </Button>
-            </div>
+
+
+            <Button
+              variant="outline"
+              onClick={() => setShowHtml(false)}
+              className={!showHtml ? 'bg-secondary' : ''}
+            >
+              Visual
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowHtml(true)}
+              className={showHtml ? 'bg-secondary' : ''}
+            >
+              Code
+            </Button>
           </div>
         </div>
-
-        {editor && <Toolbar editor={editor} />}
-        {showHtml ? (
-          <pre className="whitespace-pre-wrap text-sm prose prose-sm sm:prose-base lg:prose-lg  mt-4 focus:outline-none min-h-[300px] max-w-[690px] px-4">
-            {editor?.getHTML()}
-          </pre>
-        ) : (
-          <EditorContent
-            editor={editor}
-            className="prose prose-sm sm:prose-base lg:prose-lg max-w-[700px] mt-4 focus:outline-none min-h-[300px] px-4"
-          />
-        )}
-      </Card>
-
-      <div className="flex justify-between">
-        <Button onClick={saveContent} className="flex items-center gap-2">
-          <Save className="w-4 h-4" />
-          Save Content
-        </Button>
-
-        <Button variant="outline" onClick={() => editor?.commands.clearContent(true)}>
-          Clear
-        </Button>
-      </div>
-
-
     </div>
+
+        { editor && <Toolbar editor={editor} /> }
+  {
+    showHtml ? (
+      <div className="border rounded-md">
+        <textarea
+          value={htmlContent}
+          onChange={handleHtmlChange}
+          className="whitespace-pre-wrap text-sm font-mono w-full focus:outline-none min-h-[350px] max-h-[350px]  p-4"
+        />
+      </div>
+    ) : (
+      <div className="border rounded-md">
+        <EditorContent
+          editor={editor}
+          className="text-sm w-full focus:outline-none min-h-[350px] max-h-[350px] p-4"
+        />
+      </div>
+    )
+  }
+      </Card >
+
+
+
+
+    </div >
   )
 }
