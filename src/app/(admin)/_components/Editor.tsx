@@ -14,6 +14,9 @@ import { Save } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { Card } from "~/components/ui/card"
 import { Toolbar } from "./Toolbar"
+import { savePost } from "../_actions/save-posts"
+import { toast } from "sonner"
+import { PublishDialog } from "./PublishDialog"
 
 const initialContent = `
 <h2>Welcome to your Tiptap Editor</h2>
@@ -70,13 +73,27 @@ export function Editor() {
     }
   }
 
-  const saveContent = () => {
-    // In a real app, you would save to a database or API
-    console.log("Saving content:", content)
-    // toast({
-    //   title: "Content saved",
-    //   description: "Your content has been saved successfully.",
-    // })
+  const saveContent = async () => {
+    try {
+      const result = await savePost({
+        content: content,
+        slug: "example-slug", // You might want to generate this or pass it as a prop
+        name: "Example Post", // You might want to pass this as a prop
+        title: "Example Title" // You might want to pass this as a prop
+      })
+
+      if (result.success) {
+        toast.success("Content saved successfully")
+        // If you want to use toast notifications, uncomment these lines
+   
+      } else {
+        console.error("Failed to save content")
+        toast.error("Failed to save content")
+
+      }
+    } catch (error) {
+      console.error("Error saving content:", error)
+    }
   }
 
   return (
@@ -89,13 +106,10 @@ export function Editor() {
 
               <Button onClick={saveContent} className="flex items-center gap-2">
                 <Save className="w-4 h-4" />
-                Save ssds
+                Save
               </Button>
 
-              <Button variant="outline" onClick={() => editor?.commands.clearContent(true)}>
-                Clear
-              </Button>
-
+              <PublishDialog content={content} />
 
             <Button
               variant="outline"
