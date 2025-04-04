@@ -3,8 +3,8 @@ import React from 'react'
 import { Editor } from '../_components/Editor'
 import Header from '../_components/Header'
 import Sidebar from '../_components/Sidebar'
-// import Editor1 from '../_components/Editor1'
 function page() {
+
   return (
     <div className="flex">
       <Sidebar />
