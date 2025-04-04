@@ -6,15 +6,11 @@ import Sidebar from '../_components/Sidebar'
 function page() {
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <div className="flex-1">
-        <Header />
+
         <div className='justify-center items-center flex h-screen'>
           <Editor />
         </div>
-      </div>
-    </div>
+ 
   )
 }
 
