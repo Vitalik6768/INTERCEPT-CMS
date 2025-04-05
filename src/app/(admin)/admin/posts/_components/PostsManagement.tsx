@@ -110,9 +110,11 @@ export default function PostsManagement() {
             <div className="space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold tracking-tight">All Posts</h2>
-              <Button onClick={handleCreateClick} className="bg-primary hover:bg-primary/90">
-                <Plus className="mr-2 h-4 w-4" /> New Post
+              <Link href="/admin">
+              <Button onClick={handleCreateClick} className="bg-primary hover:bg-primary/90 hover:cursor-pointer">
+                <Plus className="mr-2 h-4 w-4" /> NEW POST
               </Button>
+              </Link>
             </div>
       
             {/* Posts Table */}
@@ -131,7 +133,7 @@ export default function PostsManagement() {
                   {posts.map((post) => (
                     <TableRow key={post.id} className="hover:bg-muted/50 transition-colors">
                       <TableCell className="font-medium"><Link href={`/admin/post/${post.slug}`}>{post.title}</Link></TableCell>
-                      <TableCell className="hidden md:table-cell text-muted-foreground">{post.description}</TableCell>
+                      <TableCell className="hidden md:table-cell text-muted-foreground">{post.excerpt}</TableCell>
                       <TableCell>
                         <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">published</Badge>
                       </TableCell>

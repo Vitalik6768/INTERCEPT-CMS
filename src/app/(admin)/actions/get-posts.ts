@@ -18,7 +18,7 @@ export async function getPosts() {
       excerpt: post.description || '',
       content: post.content,
       coverImage: post.image || '/blog/working-on.jpg',
-      createdAt: post.createdAt.toLocaleDateString('en-US', {
+      date: post.createdAt.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',

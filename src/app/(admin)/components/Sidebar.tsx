@@ -1,9 +1,10 @@
-import Link from 'next/link';
+// import Link from 'nex';
 import { FileText, Settings } from 'lucide-react';
+import Link from 'next/link';
 
 const links = [
   {
-    href: 'admin/posts',
+    href: '/admin/posts',
     icon: FileText,
     label: 'Posts'
   },

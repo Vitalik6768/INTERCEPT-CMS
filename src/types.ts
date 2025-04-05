@@ -24,4 +24,5 @@ export interface Post {
     createdAt: Date;
     updatedAt: Date;
     date?: string;
+    excerpt?: string;
 }
