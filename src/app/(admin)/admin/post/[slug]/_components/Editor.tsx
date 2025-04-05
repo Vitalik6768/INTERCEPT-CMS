@@ -8,30 +8,20 @@ import Link from "@tiptap/extension-link"
 import Image from "@tiptap/extension-image"
 import TextAlign from "@tiptap/extension-text-align"
 import Underline from "@tiptap/extension-underline"
-// import { Toolbar } from "./toolbar"
 import { Save } from "lucide-react"
-// import { useToast } from "@/hooks/use-toast"
 import { Button } from "~/components/ui/button"
 import { Card } from "~/components/ui/card"
 import { Toolbar } from "./Toolbar"
 import { savePost } from "../../../../actions/save-posts"
 import { toast } from "sonner"
+import type { Post } from "~/types"
 
 
-export function Editor({ slug }: { slug: string }) {
+
+export function Editor( post: Post ) {
   const [showHtml, setShowHtml] = useState(false)
-  const initialContent = `
-<h2>Welcome to your Tiptap Editor</h2>
-<p>This is a full-featured content editor built with Tiptap and Next.js.</p>
-<p>Some example formatting:</p>
-<ul>
-  <li>This is a bullet list</li>
-  <li>With multiple items</li>
-</ul>
-<p>You can also use <strong>bold</strong>, <em>italic</em>, and <u>underlined</u> text.</p>
-<blockquote>This is a blockquote that you can use for important information.</blockquote>
-<p>Try out all the formatting options in the toolbar above!</p>
-`
+  const initialContent = `${post.content}`
+
   const [content, setContent] = useState(initialContent)
   const [htmlContent, setHtmlContent] = useState(initialContent)
 
@@ -147,10 +137,6 @@ export function Editor({ slug }: { slug: string }) {
           )
         }
       </Card >
-
-
-
-
     </div >
   )
 }
