@@ -66,9 +66,10 @@ export function Editor( post: Post ) {
     try {
       const result = await savePost({
         content: content,
-        slug: "example-slug", // You might want to generate this or pass it as a prop
-        name: "Example Post", // You might want to pass this as a prop
-        title: "Example Title" // You might want to pass this as a prop
+        id: post.id,
+        slug: post.slug, // You might want to generate this or pass it as a prop
+        name: post.name, // You might want to pass this as a prop
+        title: post.title ?? 'Not Set', // You might want to pass this as a prop
       })
 
       if (result.success) {

@@ -1,6 +1,5 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
 import { db } from '~/server/db'
 
 export async function getPost(slug: string) {

@@ -19,16 +19,7 @@ import { toast } from "sonner"
 import { PublishDialog } from "./PublishDialog"
 
 const initialContent = `
-<h2>Welcome to your Tiptap Editor</h2>
-<p>This is a full-featured content editor built with Tiptap and Next.js.</p>
-<p>Some example formatting:</p>
-<ul>
-  <li>This is a bullet list</li>
-  <li>With multiple items</li>
-</ul>
-<p>You can also use <strong>bold</strong>, <em>italic</em>, and <u>underlined</u> text.</p>
-<blockquote>This is a blockquote that you can use for important information.</blockquote>
-<p>Try out all the formatting options in the toolbar above!</p>
+<h2>Write your first post</h2>
 `
 
 export function Editor() {
@@ -73,28 +64,7 @@ export function Editor() {
     }
   }
 
-  const saveContent = async () => {
-    try {
-      const result = await savePost({
-        content: content,
-        slug: "example-slug", // You might want to generate this or pass it as a prop
-        name: "Example Post", // You might want to pass this as a prop
-        title: "Example Title" // You might want to pass this as a prop
-      })
 
-      if (result.success) {
-        toast.success("Content saved successfully")
-        // If you want to use toast notifications, uncomment these lines
-   
-      } else {
-        console.error("Failed to save content")
-        toast.error("Failed to save content")
-
-      }
-    } catch (error) {
-      console.error("Error saving content:", error)
-    }
-  }
 
   return (
     <div className="space-y-4">
@@ -104,10 +74,7 @@ export function Editor() {
             <h2 className="text-2xl font-semibold leading-none tracking-tight">Editor</h2>
             <div className="flex gap-2">
 
-              <Button onClick={saveContent} className="flex items-center gap-2">
-                <Save className="w-4 h-4" />
-                Save
-              </Button>
+
 
               <PublishDialog content={content} />
 

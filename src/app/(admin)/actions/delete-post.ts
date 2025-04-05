@@ -3,26 +3,16 @@
 import { revalidatePath } from 'next/cache'
 import { db } from '~/server/db'
 
-interface SavePostInput {
-  content: string
-  title?: string
-  slug: string
-  name: string
+interface DeletePostInput {
   id: number
 }
 
-export async function savePost(data: SavePostInput) {
+export async function deletePost(data: DeletePostInput) {
   try {
-    await db.post.update({
+    await db.post.delete({
       where: {
         id: data.id // assuming slug is unique
-      },
-      data: {
-        content: data.content,
-        title: data.title,
-        name: data.name,
       }
-
     })
 
     revalidatePath('/admin/posts')
@@ -32,4 +22,3 @@ export async function savePost(data: SavePostInput) {
     return { success: false, error: 'Failed to save post' }
   }
 }
-

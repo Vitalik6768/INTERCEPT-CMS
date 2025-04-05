@@ -25,24 +25,10 @@ import { Textarea } from "~/components/ui/textarea"
 import { Input } from "~/components/ui/input"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu"
 import { getPosts } from "~/app/(admin)/actions/get-posts"
-
-// Sample post data type
-interface Post {
-    id: string;
-    title: string;
-    excerpt: string;
-    content: string;
-    coverImage: string;
-    date: string;
-    author: {
-        name: string;
-        avatar: string;
-    };
-}
-
-// Sample initial data
-
-
+import Link from "next/link"
+import { deletePost } from "~/app/(admin)/actions/delete-post"
+import type { Post } from "~/types"
+import { toast } from "sonner"
 
 
 export default function PostsManagement() {
@@ -50,7 +36,7 @@ export default function PostsManagement() {
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-    const [currentPost, setCurrentPost] = useState<Post | null>(null)
+    const [currentPost, setCurrentPost] = useState<Post>()
     const [formData, setFormData] = useState({
         title: "",
         excerpt: "",
@@ -87,6 +73,20 @@ export default function PostsManagement() {
         setIsDeleteDialogOpen(true)
     }
 
+    const handleDeletePost = async () => {
+        if (currentPost) {
+          try {
+            await deletePost({ id: currentPost.id })
+            setIsDeleteDialogOpen(false)
+            fetchPosts()
+            toast.success('Post deleted successfully')
+          } catch (error) {
+            toast.error('Error deleting post:')
+            console.error('Error deleting post:')
+          }
+        }
+    }
+
     // Create new post
     useEffect(() => {
         fetchPosts()
@@ -97,7 +97,7 @@ export default function PostsManagement() {
         console.log(allPosts)
         if (allPosts) {
             console.log('ok')
-            setPosts(allPosts)
+            setPosts(allPosts as unknown as Post[]) // First cast to unknown then to Post[] to avoid type error
         }
     }
 
@@ -130,8 +130,8 @@ export default function PostsManagement() {
                 <TableBody>
                   {posts.map((post) => (
                     <TableRow key={post.id} className="hover:bg-muted/50 transition-colors">
-                      <TableCell className="font-medium">{post.title}</TableCell>
-                      <TableCell className="hidden md:table-cell text-muted-foreground">{post.excerpt}</TableCell>
+                      <TableCell className="font-medium"><Link href={`/admin/post/${post.slug}`}>{post.title}</Link></TableCell>
+                      <TableCell className="hidden md:table-cell text-muted-foreground">{post.description}</TableCell>
                       <TableCell>
                         <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">published</Badge>
                       </TableCell>
@@ -196,7 +196,7 @@ export default function PostsManagement() {
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
-                    // onClick={handleDeletePost}
+                    onClick={handleDeletePost}
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                   >
                     Delete

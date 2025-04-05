@@ -12,12 +12,13 @@ export async function getPosts() {
     })
 
     return posts.map(post => ({
-      id: post.slug,
+      id: post.id,
       title: post.title || post.name,
+      slug: post.slug,
       excerpt: post.description || '',
       content: post.content,
       coverImage: post.image || '/blog/working-on.jpg',
-      date: post.createdAt.toLocaleDateString('en-US', {
+      createdAt: post.createdAt.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',

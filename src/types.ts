@@ -23,4 +23,5 @@ export interface Post {
     description: string | null;
     createdAt: Date;
     updatedAt: Date;
+    date?: string;
 }
