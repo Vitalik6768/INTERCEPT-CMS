@@ -1,5 +1,5 @@
 // import Link from 'nex';
-import { FileText, Settings } from 'lucide-react';
+import { FileText, Settings, Image } from 'lucide-react';
 import Link from 'next/link';
 
 const links = [
@@ -12,6 +12,11 @@ const links = [
     href: '/settings',
     icon: Settings,
     label: 'Settings'
+  },
+  {
+    href: '/admin/gallery',
+    icon: Image,
+    label: 'Gallery'
   }
 ];
 
