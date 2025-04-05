@@ -24,7 +24,7 @@ import { Label } from "~/components/ui/label"
 import { Textarea } from "~/components/ui/textarea"
 import { Input } from "~/components/ui/input"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu"
-import { getPosts } from "~/app/(admin)/_actions/get-posts"
+import { getPosts } from "~/app/(admin)/actions/get-posts"
 
 // Sample post data type
 interface Post {
@@ -104,62 +104,47 @@ export default function PostsManagement() {
     if (!posts) {
         return <div>Loading...</div>
     }
-    // if(posts){
-    //     return (
-    //         <div>
-    //             <h1>Posts</h1>
-    //             {posts.map((post) => (
-    //                 <div key={post.id}>
-    //                     <h2>{post.title}</h2>
-    //                     <p>{post.excerpt}</p>
-    //                 </div>
-    //             ))}
-  
-    //         </div>
-    //     )
-    // }
-
-
+ 
     if(posts){
         return (
             <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold">All Posts</h2>
-              <Button onClick={handleCreateClick}>
+              <h2 className="text-2xl font-bold tracking-tight">All Posts</h2>
+              <Button onClick={handleCreateClick} className="bg-primary hover:bg-primary/90">
                 <Plus className="mr-2 h-4 w-4" /> New Post
               </Button>
             </div>
       
             {/* Posts Table */}
-            <div className="border rounded-md">
+            <div className="border rounded-lg shadow-sm bg-card">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead className="hidden md:table-cell">Excerpt</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="hidden sm:table-cell">Date</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="font-semibold">Title</TableHead>
+                    <TableHead className="hidden md:table-cell font-semibold">Excerpt</TableHead>
+                    <TableHead className="font-semibold">Status</TableHead>
+                    <TableHead className="hidden sm:table-cell font-semibold">Date</TableHead>
+                    <TableHead className="text-right font-semibold">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {posts.map((post) => (
-                    <TableRow key={post.id}>
+                    <TableRow key={post.id} className="hover:bg-muted/50 transition-colors">
                       <TableCell className="font-medium">{post.title}</TableCell>
-                      <TableCell className="hidden md:table-cell">{post.excerpt}</TableCell>
+                      <TableCell className="hidden md:table-cell text-muted-foreground">{post.excerpt}</TableCell>
                       <TableCell>
-                        <Badge variant={"default"}>published</Badge>
+                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">published</Badge>
                       </TableCell>
-                      <TableCell className="hidden sm:table-cell">{post.date}</TableCell>
+                      <TableCell className="hidden sm:table-cell text-muted-foreground">{post.date}</TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon" className="hover:bg-muted">
                               <MoreHorizontal className="h-4 w-4" />
                               <span className="sr-only">Open menu</span>
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
+                          <DropdownMenuContent align="end" className="w-40">
                             <DropdownMenuItem 
                             // onClick={() => handleEditClick(post)}
                             >
@@ -180,8 +165,11 @@ export default function PostsManagement() {
                   ))}
                   {posts.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                        No posts found. Create your first post!
+                      <TableCell colSpan={5} className="text-center py-12 text-muted-foreground">
+                        <div className="flex flex-col items-center gap-2">
+                          <p className="text-lg">No posts found</p>
+                          <p className="text-sm">Create your first post to get started!</p>
+                        </div>
                       </TableCell>
                     </TableRow>
                   )}
@@ -190,100 +178,11 @@ export default function PostsManagement() {
             </div>
       
             {/* Create Post Dialog */}
-            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Create New Post</DialogTitle>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="title">Title</Label>
-                    <Input
-                      id="title"
-                      name="title"
-                      value={formData.title}
-                      onChange={handleInputChange}
-                      placeholder="Enter post title"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="excerpt">Excerpt</Label>
-                    <Textarea
-                      id="excerpt"
-                      name="excerpt"
-                      value={formData.excerpt}
-                      onChange={handleInputChange}
-                      placeholder="Enter post excerpt"
-                      rows={3}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="status">Status</Label>
-                    <select
-                      id="status"
-                      name="status"
-                      value={formData.status}
-                      onChange={handleInputChange}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <option value="draft">Draft</option>
-                      <option value="published">Published</option>
-                    </select>
-                  </div>
-                </div>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DialogClose>
-                  <Button>Create Post</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+           
       
             {/* Edit Post Dialog */}
-            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Edit Post</DialogTitle>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="edit-title">Title</Label>
-                    <Input id="edit-title" name="title" value={formData.title} onChange={handleInputChange} />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="edit-excerpt">Excerpt</Label>
-                    <Textarea
-                      id="edit-excerpt"
-                      name="excerpt"
-                      value={formData.excerpt}
-                      onChange={handleInputChange}
-                      rows={3}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="edit-status">Status</Label>
-                    <select
-                      id="edit-status"
-                      name="status"
-                      value={formData.status}
-                      onChange={handleInputChange}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <option value="draft">Draft</option>
-                      <option value="published">Published</option>
-                    </select>
-                  </div>
-                </div>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DialogClose>
-                  <Button>Update Post</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-      
+           
+    
             {/* Delete Confirmation Dialog */}
             <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
               <AlertDialogContent>
@@ -306,13 +205,9 @@ export default function PostsManagement() {
               </AlertDialogContent>
             </AlertDialog>
           </div>
-    
+  
         )
-
     }
-
-   
-
 }
 
 

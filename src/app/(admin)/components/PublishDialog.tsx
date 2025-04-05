@@ -13,7 +13,7 @@ import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
 import { Textarea } from "~/components/ui/textarea"
-import { PublishPost } from "../_actions/publish-post"
+import { PublishPost } from "../actions/publish-post"
 import { toast } from "sonner"
 import { Globe } from "lucide-react"
 

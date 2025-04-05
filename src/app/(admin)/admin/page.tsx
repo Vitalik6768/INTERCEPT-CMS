@@ -1,13 +1,12 @@
 // import { Editor } from '@tiptap/react'
 import React from 'react'
-import { Editor } from '../_components/Editor'
-import Header from '../_components/Header'
-import Sidebar from '../_components/Sidebar'
+import { Editor } from '../components/Editor'
+
 function page() {
 
   return (
 
-        <div className='justify-center items-center flex h-screen'>
+        <div className='justify-center items-center flex h-screen bg-gray-100'>
           <Editor />
         </div>
  

@@ -14,7 +14,7 @@ import { Save } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { Card } from "~/components/ui/card"
 import { Toolbar } from "./Toolbar"
-import { savePost } from "../_actions/save-posts"
+import { savePost } from "../actions/save-posts"
 import { toast } from "sonner"
 import { PublishDialog } from "./PublishDialog"
 
