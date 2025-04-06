@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { pinata } from "~/utils/config";
+import { db } from '~/server/db'
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,6 +9,13 @@ export async function POST(request: NextRequest) {
     const { cid } = await pinata.upload.public.file(file)
     const url = await pinata.gateways.public.convert(cid);
     console.log(url);
+
+    await db.gallery.create({
+      data: {
+        imageUrl: url
+      }
+    })
+    
     return NextResponse.json(url, { status: 200 });
   } catch (e) {
     console.log(e);
