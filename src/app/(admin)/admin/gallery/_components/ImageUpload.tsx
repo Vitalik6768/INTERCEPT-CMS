@@ -52,9 +52,19 @@ function ImagePickerField({ label, value, onChange }: ImagePickerFieldProps) {
 
         setUploading(true)
         try {
-            // TODO: Implement actual image upload logic here
-            // After successful upload, call onChange with the new image URL
-            const imageUrl = "URL_FROM_UPLOAD"
+            const formData = new FormData()
+            formData.append('file', selectedImage)
+
+            const response = await fetch('/api/files', {
+                method: 'POST',
+                body: formData,
+            })
+
+            if (!response.ok) {
+                throw new Error('Failed to upload image')
+            }
+
+            const imageUrl = await response.json()
             onChange(imageUrl)
             toast.success("Image uploaded successfully")
         } catch (error) {
