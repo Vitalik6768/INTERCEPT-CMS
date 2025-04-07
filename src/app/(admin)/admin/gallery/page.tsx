@@ -14,6 +14,7 @@ interface Image {
 function GalleryPage() {
   const [images, setImages] = useState<Image[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [showUrl, setShowUrl] = useState<number | null>(null)
 
   const fetchImages = async () => {
     try {
@@ -46,7 +47,7 @@ function GalleryPage() {
         ) : (
           // Actual images
           images.map((image) => (
-            <div key={image.id} className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+            <div key={image.id} className="aspect-square bg-gray-200 rounded-lg overflow-hidden relative group">
               <img 
                 src={image.imageUrl} 
                 alt={`Image ${image.id}`} 
@@ -54,6 +55,17 @@ function GalleryPage() {
                 height={100}
                 className="w-full h-full object-cover"
               />
+              <div className="absolute bottom-0 left-0 right-0 bg-black/65 p-2">
+                <button
+                  onClick={() => setShowUrl(showUrl === image.id ? null : image.id)}
+                  className="text-white text-sm hover:underline hover:cursor-pointer"
+                >
+                  {showUrl === image.id ? 'Hide URL' : 'Show URL'}
+                </button>
+                {showUrl === image.id && (
+                  <p className="text-white text-xs break-all mt-1">{image.imageUrl}</p>
+                )}
+              </div>
             </div>
           ))
         )}
