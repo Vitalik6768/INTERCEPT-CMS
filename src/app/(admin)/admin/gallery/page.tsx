@@ -3,29 +3,52 @@ import React, { useEffect, useState } from 'react'
 import ImagePickerField from './_components/ImageUpload'
 import { getImages } from '../../actions/get-images'
 import Image from 'next/image'
+import { toast } from 'sonner'
 
 interface Image {
   id: number
   imageUrl: string
   createdAt: Date
   updatedAt: Date
+  imageId: string
 }
 
 function GalleryPage() {
   const [images, setImages] = useState<Image[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showUrl, setShowUrl] = useState<number | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const fetchImages = async () => {
     try {
       setIsLoading(true)
       const images = await getImages()
       setImages(images)
-      console.log(images)
     } catch (error) {
-      console.error(error)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleDelete = async (imageId: string, id: number) => {
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/files?imageId=${imageId}&id=${id}`, {
+        method: 'DELETE',
+      })
+      
+      if (response.ok) {
+        setImages(images.filter(img => img.id !== id))
+        setIsDeleting(false)
+        toast.success('Image deleted successfully')
+      } else {
+        toast.error('Failed to delete image')
+      }
+    } catch (error) {
+      console.error('Error deleting image:', error)
+      toast.error('Error deleting image')
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -46,8 +69,8 @@ function GalleryPage() {
           ))
         ) : (
           // Actual images
-          images.map((image) => (
-            <div key={image.id} className="aspect-square bg-gray-200 rounded-lg overflow-hidden relative group">
+          images.map((image, index) => (
+            <div key={index} className="aspect-square bg-gray-200 rounded-lg overflow-hidden relative group">
               <img 
                 src={image.imageUrl} 
                 alt={`Image ${image.id}`} 
@@ -56,12 +79,22 @@ function GalleryPage() {
                 className="w-full h-full object-cover"
               />
               <div className="absolute bottom-0 left-0 right-0 bg-black/65 p-2">
-                <button
-                  onClick={() => setShowUrl(showUrl === image.id ? null : image.id)}
-                  className="text-white text-sm hover:underline hover:cursor-pointer"
-                >
-                  {showUrl === image.id ? 'Hide URL' : 'Show URL'}
-                </button>
+                <div className="flex justify-between items-center">
+                  <button
+                    onClick={() => setShowUrl(showUrl === image.id ? null : image.id)}
+                    className="text-white text-sm hover:underline hover:cursor-pointer"
+                  >
+                    {showUrl === image.id ? 'Hide URL' : 'Show URL'}
+                  </button>
+                  <button
+                    disabled={isDeleting}
+                    onClick={() => handleDelete(image.imageId, image.id)}
+                    className="text-red-400 text-sm hover:text-red-300 hover:cursor-pointer"
+                  >
+                    
+                    {isDeleting ? 'Deleting...' : 'Delete'}   
+                  </button>
+                </div>
                 {showUrl === image.id && (
                   <p className="text-white text-xs break-all mt-1">{image.imageUrl}</p>
                 )}

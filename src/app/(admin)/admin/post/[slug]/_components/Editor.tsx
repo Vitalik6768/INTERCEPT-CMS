@@ -15,6 +15,7 @@ import { Toolbar } from "./Toolbar"
 import { savePost } from "../../../../actions/save-posts"
 import { toast } from "sonner"
 import type { Post } from "~/types"
+import Heading from "@tiptap/extension-heading"
 
 
 
@@ -41,11 +42,17 @@ export function Editor( post: Post ) {
       }),
       Image.configure({
         HTMLAttributes: {
-          class: "rounded-md max-w-full",
+          class: "rounded-md w-[1000px] h-[1000px]",
         },
       }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
+      }),
+      Heading.configure({
+        levels: [1, 2, 3],
+        HTMLAttributes: {
+          class: "text-2xl font-bold",
+        },
       }),
     ],
     content: content,

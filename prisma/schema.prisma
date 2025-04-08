@@ -11,24 +11,25 @@ datasource db {
 }
 
 model Post {
-    id        Int      @id @default(autoincrement())
-    slug      String   @unique
-    name      String
-    content   String
-    image     String?
-    category  String?
-    author    String?
-    title     String?
+    id          Int      @id @default(autoincrement())
+    slug        String   @unique
+    name        String
+    content     String
+    image       String?
+    category    String?
+    author      String?
+    title       String?
     description String?
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
 
     @@index([slug])
 }
 
 model Gallery {
     id        Int      @id @default(autoincrement())
-    imageUrl     String
+    imageUrl  String
+    imageId   String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }

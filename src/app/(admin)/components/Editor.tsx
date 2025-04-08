@@ -43,7 +43,8 @@ export function Editor() {
       }),
       Image.configure({
         HTMLAttributes: {
-          class: "rounded-md max-w-full",
+          class: "rounded-md w-[1000px] h-[1000px]",
+ 
         },
       }),
       TextAlign.configure({
