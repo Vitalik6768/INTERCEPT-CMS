@@ -9,20 +9,23 @@ interface SavePostInput {
   slug: string
   name: string
   id: number
+  description?: string
+  image?: string
 }
 
 export async function savePost(data: SavePostInput) {
   try {
     await db.post.update({
       where: {
-        id: data.id // assuming slug is unique
+        id: data.id
       },
       data: {
         content: data.content,
         title: data.title,
         name: data.name,
+        description: data.description,
+        image: data.image,
       }
-
     })
 
     revalidatePath('/admin/posts')
