@@ -13,7 +13,6 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-6">Edit Post</h1>
             <EditPostForm post={post} />
         </div>
     )

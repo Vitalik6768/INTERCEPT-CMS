@@ -140,22 +140,22 @@ export default function PostsManagement() {
                       <TableCell className="hidden sm:table-cell text-muted-foreground">{post.date}</TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
+                          <DropdownMenuTrigger className="hover:cursor-pointer" asChild>
                             <Button variant="ghost" size="icon" className="hover:bg-muted">
                               <MoreHorizontal className="h-4 w-4" />
                               <span className="sr-only">Open menu</span>
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-40">
-                            <DropdownMenuItem 
-                            // onClick={() => handleEditClick(post)}
-                            >
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
+                            <DropdownMenuItem asChild>
+                              <Link className="hover:cursor-pointer" href={`/admin/edit-post/${post.slug}`}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit
+                              </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => handleDeleteClick(post)}
-                              className="text-destructive focus:text-destructive"
+                              className="text-destructive focus:text-destructive hover:cursor-pointer"
                             >
                               <Trash className="mr-2 h-4 w-4" />
                               Delete
